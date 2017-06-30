@@ -7,3 +7,4 @@ authors = ["Adam <sector-f@users.noreply.github.com>"]
 fuse_mt = "0.4.1"
 image = "0.14.0"
 libc = "0.2.24"
+time = "0.1.37"
