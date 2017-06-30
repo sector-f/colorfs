@@ -18,8 +18,6 @@ use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::process::exit;
 
-// 82 bytes
-
 struct ColorFs {
     init_time: Timespec,
     uid: u32,
@@ -50,6 +48,10 @@ impl FilesystemMT for ColorFs {
             return Err(ENOENT);
         }
 
+        if path.extension() != Some(OsStr::new("png")) {
+            return Err(ENOENT);
+        }
+
         let color_str = path.iter().nth(1).unwrap();
         let color = match color_from_str(color_str) {
             Ok(color) => color,
@@ -65,13 +67,15 @@ impl FilesystemMT for ColorFs {
             let _ = encoder.encode(
                 &image.into_vec(),
                 1, 1,
-                ColorType::RGB(16),
+                ColorType::RGB(8),
             );
         }
 
+        let len = buf.len();
+
         let end = {
-            if (size as u64 + offset) as usize > 45 {
-                45
+            if (size as u64 + offset) as usize > len {
+                len
             } else {
                 size as usize
             }
@@ -114,6 +118,10 @@ impl FilesystemMT for ColorFs {
             return Err(ENOENT);
         }
 
+        if path.extension() != Some(OsStr::new("png")) {
+            return Err(ENOENT);
+        }
+
         if let Ok(_color) = color_from_str(path.iter().nth(1).unwrap()) {
             return Ok((
                 Timespec::new(1, 0),
@@ -142,7 +150,7 @@ impl FilesystemMT for ColorFs {
 fn color_from_str(s: &OsStr) -> Result<Rgb<u8>, ()> {
     let s = s.to_string_lossy();
 
-    if s.len() != 6 {
+    if s.len() != 10 {
         return Err(());
     }
 
@@ -167,6 +175,7 @@ fn color_from_str(s: &OsStr) -> Result<Rgb<u8>, ()> {
         },
     };
 
+    println!("{} {} {}", r, g, b);
     Ok(Rgb::from_channels(r, g, b, 0))
 }
 
