@@ -1,0 +1,9 @@
+[package]
+name = "colorfs"
+version = "0.1.0"
+authors = ["Adam <sector-f@users.noreply.github.com>"]
+
+[dependencies]
+fuse_mt = "0.4.1"
+image = "0.14.0"
+libc = "0.2.24"
