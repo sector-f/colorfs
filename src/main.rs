@@ -18,6 +18,8 @@ use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::process::exit;
 
+const PNG_SIZE: u64 = 69;
+
 struct ColorFs {
     init_time: Timespec,
     uid: u32,
@@ -126,7 +128,7 @@ impl FilesystemMT for ColorFs {
             return Ok((
                 Timespec::new(1, 0),
                 FileAttr {
-                    size: 45,
+                    size: PNG_SIZE,
                     blocks: 1,
                     atime: self.init_time,
                     mtime: self.init_time,
@@ -150,10 +152,6 @@ impl FilesystemMT for ColorFs {
 fn color_from_str(s: &OsStr) -> Result<Rgb<u8>, ()> {
     let s = s.to_string_lossy();
 
-    if s.len() != 10 {
-        return Err(());
-    }
-
     let r = match u8::from_str_radix(&s[0..2], 16) {
         Ok(color) => color,
         Err(_) => {
@@ -175,7 +173,6 @@ fn color_from_str(s: &OsStr) -> Result<Rgb<u8>, ()> {
         },
     };
 
-    println!("{} {} {}", r, g, b);
     Ok(Rgb::from_channels(r, g, b, 0))
 }
 
