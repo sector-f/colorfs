@@ -15,5 +15,5 @@ mkdir /tmp/colors
 colorfs /tmp/colors &
 
 # Make the desktop dark red
-feh --bg-tile /colors/550000.png
+feh --bg-tile /tmp/colors/550000.png
 ```
